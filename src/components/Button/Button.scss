@@ -1,0 +1,14 @@
+@import "../../styles/variables.scss";
+
+.warning{
+  background-color: gold;
+}
+.info{
+  background-color: blue;
+}
+.error{
+  background-color: tomato;
+}
+.success{
+  background-color:$main-color;
+}
