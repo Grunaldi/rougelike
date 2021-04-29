@@ -1,0 +1,30 @@
+@import "../../styles/variables.scss";
+
+.warning{
+  background-color: gold;
+  height: 100px;
+  width: 100px;
+  border-top: 1px black solid;
+  border-left: 1px black solid;
+}
+.info{
+  background-color: blue;
+  height: 100px;
+  width: 100px;
+  border-top: 1px black solid;
+  border-left: 1px black solid;
+}
+.error{
+  background-color: tomato;
+  height: 100px;
+  width: 100px;
+  border-top: 1px black solid;
+  border-left: 1px black solid;
+}
+.success{
+  background-color:$main-color;
+  height: 100px;
+  width: 100px;
+  border-top: 1px black solid;
+  border-left: 1px black solid;
+}
