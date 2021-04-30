@@ -1,7 +1,7 @@
 import React ,{useState,useEffect} from "react"
 import {Row} from "../Row/Row";
 import {Hero} from "../Hero/Hero";
-import {changeHeroPosition} from "./Room__Functions";
+import {changeEnemyPosition, changeHeroPosition} from "./Room__Functions";
 import {Enemy} from "../Enemy/Enemy";
 
 
@@ -11,15 +11,21 @@ export const Room =()=>{
 
     const handleKeyPress=(event)=>{
         const nextHeroPosition=changeHeroPosition(event.key)
+        const nextEnemyPosition=changeEnemyPosition(heroPosition,enemyPosition)
 
         setHeroPosition((prev)=>{return {
             ...heroPosition,
-            top:prev.top+nextHeroPosition.direction,
-            left:prev.left+nextHeroPosition.distance
+            top:prev.top+nextHeroPosition.top,
+            left:prev.left+nextHeroPosition.left
         }})
 
-        // nextHeroPosition.direction==="top"?setHeroPositionTop(prev=>prev+nextHeroPosition.distance)
-        //     :setHeroPositionLeft(prev=>prev+nextHeroPosition.distance)
+        setEnemyPosition((prev)=>{return {
+            ...enemyPosition,
+            top:prev.top+nextEnemyPosition.top,
+            left:prev.left+nextEnemyPosition.left
+        }})
+
+
     }
 
     useEffect(()=>{
