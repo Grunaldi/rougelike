@@ -1,7 +1,7 @@
 
 export const changeHeroPosition = (key,layout)=>{
     if(key==="w"){
-        if(isMoveLegal("w",layout)){
+        if(isHeroMoveLegal("w",layout)){
             return {
                 top:-101,
                 left:0,
@@ -17,7 +17,7 @@ export const changeHeroPosition = (key,layout)=>{
 
     }
     if(key==="s"){
-        if(isMoveLegal("s",layout)){
+        if(isHeroMoveLegal("s",layout)){
             return {
                 top:101,
                 left:0,
@@ -32,7 +32,7 @@ export const changeHeroPosition = (key,layout)=>{
         }
     }
     if(key==="a"){
-        if(isMoveLegal("a",layout)){
+        if(isHeroMoveLegal("a",layout)){
             return {
                 top:0,
                 left:-101,
@@ -47,7 +47,7 @@ export const changeHeroPosition = (key,layout)=>{
         }
     }
     if(key==="d"){
-        if(isMoveLegal("d",layout)){
+        if(isHeroMoveLegal("d",layout)){
             return {
                 top:0,
                 left:101,
@@ -63,79 +63,141 @@ export const changeHeroPosition = (key,layout)=>{
     }
 }
 
-export const changeEnemyPosition =(heroPosition,enemyPosition)=>{
-    const enemyPosUp={top:enemyPosition.top-101,left:enemyPosition.left}
-    const enemyPosDown={top:enemyPosition.top+101,left:enemyPosition.left}
-    const enemyPosLeft={top:enemyPosition.top,left:enemyPosition.left-101}
-    const enemyPosRight={top:enemyPosition.top,left:enemyPosition.left+101}
+export const changeEnemyPosition =(heroPosition,enemyPosition,layout)=>{
+    const enemyPosUp={top:enemyPosition.top-101,left:enemyPosition.left,direction:"up"}
+    const enemyPosDown={top:enemyPosition.top+101,left:enemyPosition.left,direction:"down"}
+    const enemyPosLeft={top:enemyPosition.top,left:enemyPosition.left-101,direction:"left"}
+    const enemyPosRight={top:enemyPosition.top,left:enemyPosition.left+101,direction:"right"}
 
-    const allDistances =[{distance:calculateDistance(heroPosition,enemyPosUp),direction:"up"},
-        {distance:calculateDistance(heroPosition,enemyPosDown),direction:"down"},
-        {distance:calculateDistance(heroPosition,enemyPosLeft),direction:"left"},
-        {distance:calculateDistance(heroPosition,enemyPosRight),direction:"right"}]
+    let allPotentialPositions=[enemyPosUp,enemyPosDown,enemyPosLeft,enemyPosRight];
+
+    let allLegalPositions=[];
+
+    for (let i = 0; i < allPotentialPositions.length; i++) {
+        if (isEnemyPositionLegal(allPotentialPositions[i].direction,layout)){
+            allLegalPositions.push(allPotentialPositions[i])
+        }
+    }
+
+    let allDistances=[];
+    allLegalPositions.forEach(position=>{
+        allDistances.push({distance:calculateDistance(heroPosition,position),direction:position.direction})
+    })
     allDistances.sort((first,second)=>{return first.distance-second.distance})
-
-    return pickEnemyLocation(allDistances[0].direction)
+    return pickEnemyLocation(allDistances[0])
 
 }
 
 const calculateDistance=(pos1,pos2)=>{
-    const sideA=((pos1.top)*-1)+pos2.top
-    const sideB=((pos1.left)*-1)+pos2.left
+
+    const sideA=(pos1.top-pos2.top)
+    const sideB=(pos1.left-pos2.left)
     const sideC=sideA*sideA+sideB*sideB
     return Math.pow(sideC,0.5)
 }
 
-const pickEnemyLocation=(moveDirection)=>{
-    if(moveDirection==="up"){
+const pickEnemyLocation=(move)=>{
+    if (move.distance===0){
+        return {
+            top:0,
+            left:0,
+            enemy:{
+                r:0,
+                c:0
+            }
+        }
+    }
+    if(move.direction==="up"){
         return {
             top:-101,
-            left:0
+            left:0,
+            enemy:{
+                r:-1,
+                c:0
+            }
         }
     }
-    if(moveDirection==="down"){
+    if(move.direction==="down"){
         return {
             top:101,
-            left:0
+            left:0,
+            enemy:{
+                r:1,
+                c:0
+            }
         }
     }
-    if(moveDirection==="left"){
+    if(move.direction==="left"){
         return {
             top:0,
-            left:-101
+            left:-101,
+            enemy:{
+                r:0,
+                c:-1
+            }
         }
     }
-    if(moveDirection==="right"){
+    if(move.direction==="right"){
         return {
             top:0,
-            left:101
+            left:101,
+            enemy:{
+                r:0,
+                c:1
+            }
         }
     }
 }
 
-const isMoveLegal=(key,layout)=>{
+const isHeroMoveLegal=(key,layout)=>{
     let tempHero={r:0,c:0};
-
-    function checkLegal() {
-        let isNotInRoomBorders = tempHero.r < 0 || tempHero.r >= layout.rows || tempHero.c < 0 || tempHero.c >= layout.columns;
-        let isOnEnemy = tempHero.r === layout.enemy.r && tempHero.c === layout.enemy.c
-        return (!isNotInRoomBorders && !isOnEnemy);
-    }
 
     if(key==="w"){
         tempHero={r:layout.hero.r-1,c:layout.hero.c}
-        return checkLegal();
+        return checkLegal(tempHero,layout.enemy,layout);
     }
     if(key==="s"){
         tempHero={r:layout.hero.r+1,c:layout.hero.c}
-        return checkLegal();
+        return checkLegal(tempHero,layout.enemy,layout);
     }
     if(key==="a"){
         tempHero={r:layout.hero.r,c:layout.hero.c-1}
-        return checkLegal();
+        return checkLegal(tempHero,layout.enemy,layout);
     }
     if(key==="d"){
         tempHero={r:layout.hero.r,c:layout.hero.c+1}
-        return checkLegal();
+        return checkLegal(tempHero,layout.enemy,layout);
     }
+}
+
+const isEnemyPositionLegal=(direction,layout)=>{
+    let tempPosition={r:0,c:0}
+
+    if(direction==="up"){
+        tempPosition={r:layout.enemy.r-1,c:layout.enemy.c}
+        return checkLegalEnemy(tempPosition,layout.hero,layout)
+    }
+    if(direction==="down"){
+        tempPosition={r:layout.enemy.r+1,c:layout.enemy.c}
+        return checkLegalEnemy(tempPosition,layout.hero,layout)
+    }
+    if(direction==="left"){
+        tempPosition={r:layout.enemy.r,c:layout.enemy.c-1}
+        return checkLegalEnemy(tempPosition,layout.hero,layout)
+    }
+    if(direction==="right"){
+        tempPosition={r:layout.enemy.r,c:layout.enemy.c+1}
+        return checkLegalEnemy(tempPosition,layout.hero,layout)
+    }
+}
+
+function checkLegal(positionOne, positionTwo,layout) {
+    let isNotInRoomBorders = positionOne.r < 0 || positionOne.r >= layout.rows || positionOne.c < 0 || positionOne.c >= layout.columns;
+    let isOnEnemy = positionOne.r === positionTwo.r && positionOne.c === positionTwo.c
+    return (!isNotInRoomBorders && !isOnEnemy);
+}
+
+function checkLegalEnemy(positionOne, positionTwo,layout) {
+    let isNotInRoomBorders = positionOne.r < 0 || positionOne.r >= layout.rows || positionOne.c < 0 || positionOne.c >= layout.columns;
+    return (!isNotInRoomBorders);
 }

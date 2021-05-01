@@ -12,21 +12,23 @@ export const Room =()=>{
         rows:3,
         columns:4
         })
-
-
     const [heroPosition,setHeroPosition]=useState({top:0,left:0})
     const [enemyPosition,setEnemyPosition]=useState({top:202,left:303})
 
     const handleKeyPress=(event)=>{
+        let tempHero={}
         const nextHeroPosition=changeHeroPosition(event.key,roomLayout)
-        const nextEnemyPosition=changeEnemyPosition(heroPosition,enemyPosition,roomLayout)
-
-        setHeroPosition((prev)=>{return {
+        setHeroPosition((prev)=>{
+            tempHero=prev
+            tempHero={
+                top: tempHero.top+nextHeroPosition.top,
+                left:tempHero.left+nextHeroPosition.left
+            }
+            return {
             ...prev,
             top:prev.top+nextHeroPosition.top,
             left:prev.left+nextHeroPosition.left
         }})
-
 
         setRoomLayout((prev)=>{return{
             ...prev,
@@ -35,13 +37,21 @@ export const Room =()=>{
                 c:prev.hero.c+nextHeroPosition.hero.c,
             }
         }})
-
+        console.log(heroPosition)
+        console.log(tempHero)
+        const nextEnemyPosition=changeEnemyPosition(tempHero,enemyPosition,roomLayout)
         setEnemyPosition((prev)=>{return {
             ...prev,
             top:prev.top+nextEnemyPosition.top,
             left:prev.left+nextEnemyPosition.left
         }})
-
+        setRoomLayout((prev)=>{return{
+            ...prev,
+            enemy:{
+                r:prev.enemy.r+nextEnemyPosition.enemy.r,
+                c:prev.enemy.c+nextEnemyPosition.enemy.c
+            }
+        }})
 
     }
 
