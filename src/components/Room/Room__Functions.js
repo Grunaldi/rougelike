@@ -1,27 +1,64 @@
 
-export const changeHeroPosition = (key)=>{
+export const changeHeroPosition = (key,layout)=>{
     if(key==="w"){
-        return {
-            top:-101,
-            left:0
+        if(isMoveLegal("w",layout)){
+            return {
+                top:-101,
+                left:0,
+                hero:{r:-1,c:0}
+            }
+        }else{
+            return {
+                top:0,
+                left:0,
+                hero:{r:0,c:0}
+            }
         }
+
     }
     if(key==="s"){
-        return {
-            top:101,
-            left:0
+        if(isMoveLegal("s",layout)){
+            return {
+                top:101,
+                left:0,
+                hero:{r:1,c:0}
+            }
+        }else{
+            return {
+                top:0,
+                left:0,
+                hero:{r:0,c:0}
+            }
         }
     }
     if(key==="a"){
-        return {
-            top:0,
-            left:-101
+        if(isMoveLegal("a",layout)){
+            return {
+                top:0,
+                left:-101,
+                hero:{r:0,c:-1}
+            }
+        }else{
+            return {
+                top:0,
+                left:0,
+                hero:{r:0,c:0}
+            }
         }
     }
     if(key==="d"){
-        return {
-            top:0,
-            left:101
+        if(isMoveLegal("d",layout)){
+            return {
+                top:0,
+                left:101,
+                hero:{r:0,c:1}
+            }
+        }else{
+            return {
+                top:0,
+                left:0,
+                hero:{r:0,c:0}
+            }
         }
     }
 }
@@ -73,5 +110,32 @@ const pickEnemyLocation=(moveDirection)=>{
             top:0,
             left:101
         }
+    }
+}
+
+const isMoveLegal=(key,layout)=>{
+    let tempHero={r:0,c:0};
+
+    function checkLegal() {
+        let isNotInRoomBorders = tempHero.r < 0 || tempHero.r >= layout.rows || tempHero.c < 0 || tempHero.c >= layout.columns;
+        let isOnEnemy = tempHero.r === layout.enemy.r && tempHero.c === layout.enemy.c
+        return (!isNotInRoomBorders && !isOnEnemy);
+    }
+
+    if(key==="w"){
+        tempHero={r:layout.hero.r-1,c:layout.hero.c}
+        return checkLegal();
+    }
+    if(key==="s"){
+        tempHero={r:layout.hero.r+1,c:layout.hero.c}
+        return checkLegal();
+    }
+    if(key==="a"){
+        tempHero={r:layout.hero.r,c:layout.hero.c-1}
+        return checkLegal();
+    }
+    if(key==="d"){
+        tempHero={r:layout.hero.r,c:layout.hero.c+1}
+        return checkLegal();
     }
 }
