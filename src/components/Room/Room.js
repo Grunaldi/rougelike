@@ -7,17 +7,22 @@ import {Enemy} from "../Enemy/Enemy";
 
 export const Room =()=>{
     const [roomLayout,setRoomLayout]=useState({
-        hero:{r:0, c:0},
-        enemy:{r:2, c:3},
+        hero:{r:0, c:0 , hp:{current:50,max:50},dmg:{flat:10}},
+        enemy:{r:2, c:3, hp:{current:30,max:30},dmg:{flat:5}},
         rows:3,
         columns:4
         })
     const [heroPosition,setHeroPosition]=useState({top:0,left:0})
     const [enemyPosition,setEnemyPosition]=useState({top:202,left:303})
+    const [victory,setVictory]=useState(false)
+    const [defeat,setDefeat]=useState(false)
 
     const handleKeyPress=(event)=>{
         let tempHero={}
         const nextHeroPosition=changeHeroPosition(event.key,roomLayout)
+        if(nextHeroPosition.enemy.hp.current===0){
+            setVictory(true)
+        }
         setHeroPosition((prev)=>{
             tempHero=prev
             tempHero={
@@ -30,16 +35,27 @@ export const Room =()=>{
             left:prev.left+nextHeroPosition.left
         }})
 
-        setRoomLayout((prev)=>{return{
+        setRoomLayout((prev)=>
+        {return{
             ...prev,
             hero:{
+                ...prev.hero,
                 r:prev.hero.r+nextHeroPosition.hero.r,
                 c:prev.hero.c+nextHeroPosition.hero.c,
+            },
+            enemy:{
+                ...prev.enemy,
+                hp:{...prev.enemy.hp,
+                current:nextHeroPosition.enemy.hp.current
+                }
             }
         }})
         console.log(heroPosition)
         console.log(tempHero)
         const nextEnemyPosition=changeEnemyPosition(tempHero,enemyPosition,roomLayout)
+        if(nextEnemyPosition.hero.hp.current===0){
+            setDefeat(true)
+        }
         setEnemyPosition((prev)=>{return {
             ...prev,
             top:prev.top+nextEnemyPosition.top,
@@ -48,9 +64,19 @@ export const Room =()=>{
         setRoomLayout((prev)=>{return{
             ...prev,
             enemy:{
+                ...prev.enemy,
                 r:prev.enemy.r+nextEnemyPosition.enemy.r,
                 c:prev.enemy.c+nextEnemyPosition.enemy.c
+            },
+            hero:{
+                ...prev.hero,
+                hp:{
+                    ...prev.hero.hp,
+                    current:nextEnemyPosition.hero.hp.current
+                }
             }
+
+
         }})
 
     }
@@ -64,11 +90,11 @@ export const Room =()=>{
 
     return(
         <>
-                <Row/>
-                <Row/>
-                <Row/>
-                <Hero top={heroPosition.top} left={heroPosition.left}/>
-                <Enemy top={enemyPosition.top} left={enemyPosition.left}/>
+            {(!victory&&!defeat) && <Row/>}
+            {(!victory&&!defeat) && <Row/>}
+            {(!victory&&!defeat) && <Row/>}
+            {(!victory && !defeat) && <Hero top={heroPosition.top} left={heroPosition.left} hp={roomLayout.hero.hp}/>}
+            {(!victory && !defeat) && <Enemy top={enemyPosition.top} left={enemyPosition.left} hp={roomLayout.enemy.hp}/>}
         </>
     )
 }

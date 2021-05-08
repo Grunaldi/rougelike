@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import "./Enemy.scss";
 
-export const Enemy =({top,left})=>{
+export const Enemy =({top,left,hp})=>{
 
     const style={
         top:top,
@@ -13,7 +13,7 @@ export const Enemy =({top,left})=>{
 
     return(
         <>
-            <div className="enemy" style={style} />
+            <div className="enemy" style={style} >{hp.current}/{hp.max}</div>
         </>
     )
 }
