@@ -3,6 +3,8 @@ import {Row} from "../Row/Row";
 import {Hero} from "../Hero/Hero";
 import {changeEnemyPosition, changeHeroPosition} from "./Room__Functions";
 import {Enemy} from "../Enemy/Enemy";
+import {Victory} from "../Victory/Victory";
+import {Defeat} from "../Defeat/Defeat";
 
 
 export const Room =()=>{
@@ -95,6 +97,8 @@ export const Room =()=>{
             {(!victory&&!defeat) && <Row/>}
             {(!victory && !defeat) && <Hero top={heroPosition.top} left={heroPosition.left} hp={roomLayout.hero.hp}/>}
             {(!victory && !defeat) && <Enemy top={enemyPosition.top} left={enemyPosition.left} hp={roomLayout.enemy.hp}/>}
+            {victory && <Victory/>}
+            {defeat &&<Defeat/>}
         </>
     )
 }
