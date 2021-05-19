@@ -20,16 +20,16 @@ export const Room =()=>{
     const [defeat,setDefeat]=useState(false)
 
     const handleKeyPress=(event)=>{
-        let tempHero={}
+        let tempHeroPosition={}
         const nextHeroPosition=changeHeroPosition(event.key,roomLayout)
         if(nextHeroPosition.enemy.hp.current===0){
             setVictory(true)
         }
         setHeroPosition((prev)=>{
-            tempHero=prev
-            tempHero={
-                top: tempHero.top+nextHeroPosition.top,
-                left:tempHero.left+nextHeroPosition.left
+            tempHeroPosition=prev
+            tempHeroPosition={
+                top: tempHeroPosition.top+nextHeroPosition.top,
+                left:tempHeroPosition.left+nextHeroPosition.left
             }
             return {
             ...prev,
@@ -37,8 +37,8 @@ export const Room =()=>{
             left:prev.left+nextHeroPosition.left
         }})
 
-        setRoomLayout((prev)=>
-        {return{
+        setRoomLayout((prev)=>{
+            return{
             ...prev,
             hero:{
                 ...prev.hero,
@@ -52,9 +52,7 @@ export const Room =()=>{
                 }
             }
         }})
-        console.log(heroPosition)
-        console.log(tempHero)
-        const nextEnemyPosition=changeEnemyPosition(tempHero,enemyPosition,roomLayout)
+        const nextEnemyPosition=changeEnemyPosition(tempHeroPosition,enemyPosition,roomLayout)
         if(nextEnemyPosition.hero.hp.current===0){
             setDefeat(true)
         }

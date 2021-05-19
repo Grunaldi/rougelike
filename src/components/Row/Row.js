@@ -5,17 +5,15 @@ import "./Row.scss"
 
 export const Row =()=>{
 
-    const handleClick=()=>{
-        console.log("siema!");
-    }
+
 
     return(
         <>
             <div className="row">
-                <Cell type="warning" text="Counter" onClick={handleClick}/>
-                <Cell type="info" text="Counter" onClick={handleClick}/>
-                <Cell type="error" text="Counter" onClick={handleClick}/>
-                <Cell type="success" text="Counter" onClick={handleClick}/>
+                <Cell type="warning" text="Counter" />
+                <Cell type="info" text="Counter" />
+                <Cell type="error" text="Counter" />
+                <Cell type="success" text="Counter" />
             </div>
 
         </>
