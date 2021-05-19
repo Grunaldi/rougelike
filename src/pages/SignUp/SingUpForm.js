@@ -28,7 +28,6 @@ const SignUpFormBase = (props)=> {
         event.preventDefault();
 
     }
-    const isInvalid =passwordOne !== passwordTwo || passwordOne === '' || email === '' || username === '';
     return (
         <form onSubmit={onSubmit}>
             <input

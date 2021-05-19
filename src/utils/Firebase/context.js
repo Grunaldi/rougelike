@@ -1,5 +1,4 @@
-import React, {Component} from "react" ;
-import firebase from "firebase";
+import React from "react" ;
 
 const FirebaseContext = React.createContext(null)
 
